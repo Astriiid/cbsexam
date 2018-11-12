@@ -3,12 +3,17 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import cache.UserCache;
 import model.User;
+import utils.Hashing;
 import utils.Log;
 
 public class UserController {
 
   private static DatabaseController dbCon;
+  //Astrids changes: Creating a new object of UserCache
+  private static UserCache userCache;
 
   public UserController() {
     dbCon = new DatabaseController();
@@ -19,6 +24,8 @@ public class UserController {
     // Check for connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
+      //Astrids changes
+      userCache = new UserCache();
     }
 
     // Build the query for DB
@@ -107,14 +114,17 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it - FIXED.
+    //Astrids changes: Creating an object of the Hashing class
+    Hashing hashing = new Hashing();
     int userID = dbCon.insert(
         "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
             + user.getFirstname()
             + "', '"
             + user.getLastname()
             + "', '"
-            + user.getPassword()
+                //Astrids changes: Calling the method from the Hashing Class
+            + hashing.saltingsalt(user.getPassword())
             + "', '"
             + user.getEmail()
             + "', "

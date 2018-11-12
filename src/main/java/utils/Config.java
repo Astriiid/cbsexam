@@ -2,6 +2,8 @@ package utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.solr.client.solrj.SolrQuery;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,16 +22,16 @@ public final class Config {
   private static String SOLR_PATH;
   private static String SOLR_CORE;
   private static long USER_TTL;
-  public static long getUserTtl()
-    {return USER_TTL;}
   private static long ORDER_TTL;
-  public static long getOrderTtl()
-    {return ORDER_TTL;}
   private static long PRODUCT_TTL;
-  public static long getProductTtl() {
-    return PRODUCT_TTL;
-  }
+  private static String SALT;
 
+
+  public static long getProductTtl() { return PRODUCT_TTL; }
+
+  public static long getOrderTtl() { return ORDER_TTL;}
+
+  public static long getUserTtl() {return USER_TTL;}
 
   public static String getDatabaseHost() {
     return DATABASE_HOST;
@@ -71,6 +73,8 @@ public final class Config {
     return SOLR_CORE;
   }
 
+  public static String getSALT(){return SALT;}
+
   public static void initializeConfig() throws IOException {
 
     // Init variables to parse JSON
@@ -105,5 +109,9 @@ public final class Config {
     SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
     SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
+    // Astrids changes
+    ORDER_TTL = json.get("ORDER_TTL").getAsLong();
+    USER_TTL = json.get("USER_TTL").getAsLong();
+    SALT = json.get("SALT").getAsString();
   }
 }

@@ -45,7 +45,7 @@ public class OrderEndpoints {
     // Call our controller-layer in order to get the order from the DB
     ArrayList<Order> orders = OrderController.getOrders();
 
-    // TODO: Add Encryption to JSON FIXED
+    // TODO: Add Encryption to JSON - FIXED
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(orders);
     json = Encryption.encryptDecryptXOR(json);

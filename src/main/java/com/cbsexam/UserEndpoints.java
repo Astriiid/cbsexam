@@ -40,11 +40,18 @@ public class UserEndpoints {
                                                   */
 
     /* Man kunne forestille seg at det skal returneres noe annet?? Hvis man ikke kunne finne det id, så kan brugeren ha noe annet en noe tomt svar. Gjelde de andre endpoints hvis det er, showcase */
-    // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
-  }
 
+    // TODO: What should happen if something breaks down? - FIXED
+    //Astrid changes: creating an if statement to check method getUser
+      if (user!=null) {
+        // Return the user with the status code 200
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+
+      } else {
+          //Astrid Changes: Http messeage for failure
+          return Response.status(400).entity("Could not get user").build();
+        }
+      }
   /** @return Responses */
   @GET
   @Path("/")
@@ -56,7 +63,7 @@ public class UserEndpoints {
     // Get a list of users
     ArrayList<User> users = UserController.getUsers();
 
-    // TODO: Add Encryption to JSON :FIX
+    // TODO: Add Encryption to JSON - FIXED
 
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);

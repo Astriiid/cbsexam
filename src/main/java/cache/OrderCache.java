@@ -6,7 +6,8 @@ import utils.Config;
 
 import java.util.ArrayList;
 
-//TODO: Build this cache and use it.
+//TODO: Build this cache and use it - FIXED.
+// Astrid notes: Using this cache in the OrderController
 public class OrderCache {
 
     // Creating an array list of orders

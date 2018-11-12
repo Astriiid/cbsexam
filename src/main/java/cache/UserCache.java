@@ -6,7 +6,8 @@ import utils.Config;
 
 import java.util.ArrayList;
 
-//TODO: Build this cache and use it.
+//TODO: Build this cache and use it - FIXED
+// Astrids notes: Using this cache in the UserController.
 public class UserCache {
 
     // List of products
