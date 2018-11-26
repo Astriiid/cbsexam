@@ -108,7 +108,9 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String x) {
+  public Response loginUser(String body) {
+
+    User user = new Gson().fromJson(body, User.class);
 
     String token = UserController.loginUser(user);
 
