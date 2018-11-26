@@ -104,7 +104,7 @@ public class UserEndpoints {
   // TRE Endpoints som ikke er laget enda, implementer logikken, endpointet er der,
   // Hva skal man ha som funksjonalitet!! LOGIN, DELETE OG UPDATE
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system.
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. - FIXED
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -125,12 +125,27 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+  // TODO: Make the system able to delete users - FIXED
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+  @POST
+  @Path("/delete")
+  @Consumes(MediaType.APPLICATION_JSON)
+
+  public Response deleteUser(String body) {
+
+    User user = new Gson().fromJson(body, User.class);
+
+    String token = UserController.getTokenVerifier(user);
+
+    if(token !=null){
+      UserController.deleteUser(user);
+
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user has been deleted").build();
+    }else
+      // Return a response with status 200 and JSON as type
+      return Response.status(400).entity("Something went wrong").build();
   }
+
 
   // TODO: Make the system able to update users
   public Response updateUser(String x) {
