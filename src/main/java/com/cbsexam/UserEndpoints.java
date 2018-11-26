@@ -148,10 +148,17 @@ public class UserEndpoints {
 
 
   // TODO: Make the system able to update users
-  public Response updateUser(String x) {
+  public Response updateUser(String body) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    User user = new Gson().fromJson(body, User.class);
+    String token = UserController.getTokenVerifier(user);
+
+    if(token != ""){
+      UserController.update(user);
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user has been updated").build();
+    } else
+      return Response.status(400).entity("Something went wrong").build();
+
   }
 }
 
