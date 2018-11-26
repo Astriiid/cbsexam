@@ -14,7 +14,7 @@ import model.User;
 import utils.Encryption;
 import utils.Log;
 
-//Alle de endpoints som er fra userklassen, bruker path "user"
+//Alle de endpoints som er fra userklassen, bruger path "user"
 @Path("user")
 public class UserEndpoints {
 
@@ -22,7 +22,7 @@ public class UserEndpoints {
    * @param idUser
    * @return Responses
    */
-  // her bruker man bath user/iduser
+  // her bruger man bath user/iduser
   @GET
   @Path("/{idUser}")
   public Response getUser(@PathParam("idUser") int idUser) {
@@ -110,10 +110,18 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String x) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
-  }
+    String token = UserController.loginUser(user);
 
+    if (token != "") {
+
+      return
+              Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
+    } else {
+
+      // Return a response with status 200 and JSON as type
+      return Response.status(400).entity("Brugeren kunne ikke oprettes").build();
+    }
+  }
 
   // TODO: Make the system able to delete users
   public Response deleteUser(String x) {

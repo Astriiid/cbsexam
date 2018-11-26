@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import cache.UserCache;
+import com.sun.org.apache.xml.internal.security.algorithms.Algorithm;
 import model.User;
+import org.glassfish.jersey.client.JerseyWebTarget;
 import utils.Hashing;
 import utils.Log;
 
@@ -142,4 +144,53 @@ public class UserController {
     // Return user
     return user;
   }
+
+  public static String loginUser(User user){
+    if(dbCon == null){
+      dbCon = new DatabaseController();
+    }
+    String sql = "SELECT * FROM user where email =" +user.getEmail() + "AND password =" + user.getPassword() + "'";
+
+    dbCon.loginUser(sql);
+
+    ResultSet resultSet =dbCon.query(sql);
+    User userlogin;
+    String token = null;
+
+    try{
+      if(resultSet.next()){
+        userlogin =
+                new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("firstname"),
+                        resultSet.getString("lastname"),
+                        resultSet.getString("password"),
+                        resultSet.getString("email"));
+
+                if (userlogin !=null){
+                  try{
+                    Algorithm algorithm = Algorithm.HMAC256("secret");
+                    token = JWT.create()
+                            .withClaim("userid", userlogin.getId())
+                            .withIssuer("auth0")
+                            .sign(algorithm);
+                  }catch (JWTCreateExeption exeption) {
+
+                    System.out.println(exeption.getMessage());
+                  }finally {
+                    return token;
+                  }
+                }
+
+      } else {
+        System.out.println("Ingen bruger fundet");
+      }
+    }catch (SQLException ex) {
+      System.out.println(ex.getMessage());
+    }
+
+    return "";
+
+  }
+
 }
