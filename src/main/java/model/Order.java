@@ -13,7 +13,6 @@ public class Order {
   private long createdAt;
   private long updatedAt;
 
-
   public Order() {}
 
   public Order(

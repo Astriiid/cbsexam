@@ -1,5 +1,7 @@
 package model;
 
+import utils.Hashing;
+
 public class User {
 
   public int id;
@@ -7,15 +9,17 @@ public class User {
   public String lastname;
   public String email;
   private String password;
-  private long createdTime;
+  private static long createdTime;
   private String token;
 
-  public User(int id, String firstname, String lastname, String password, String email) {
+  //Astrid: En User skal indeholde alle de her parametre - Der er formegentlig et tjek et sted i programmet
+  public User(int id, String firstname, String lastname, String password, String email, long createdTime) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.password = password;
+    this.password = Hashing.sha(password);
     this.email = email;
+    this.createdTime = createdTime;
   }
 
   public int getId() {
@@ -58,7 +62,7 @@ public class User {
     this.password = password;
   }
 
-  public long getCreatedTime() {
+  public static long getCreatedTime() {
     return createdTime;
   }
 

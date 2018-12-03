@@ -3,16 +3,12 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import cache.ProductCache;
 import model.Product;
 import utils.Log;
 
 public class ProductController {
 
   private static DatabaseController dbCon;
-  //Astrids changes: Creating an object of ProductCache
-  private static ProductCache productCache;
 
   public ProductController() {
     dbCon = new DatabaseController();
@@ -23,8 +19,6 @@ public class ProductController {
     // check for connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
-      //Astrids changes:
-      productCache = new ProductCache();
     }
 
     // Build the SQL query for the DB

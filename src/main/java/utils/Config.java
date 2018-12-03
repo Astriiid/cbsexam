@@ -2,8 +2,6 @@ package utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.solr.client.solrj.SolrQuery;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +23,7 @@ public final class Config {
   private static long ORDER_TTL;
   private static long PRODUCT_TTL;
   private static String SALT;
+  private static String ENCRYPTION_KEY;
 
 
   public static long getProductTtl() { return PRODUCT_TTL; }
@@ -75,6 +74,8 @@ public final class Config {
 
   public static String getSALT(){return SALT;}
 
+  public static String getENCRYPTION_KEY(){return ENCRYPTION_KEY;}
+
   public static void initializeConfig() throws IOException {
 
     // Init variables to parse JSON
@@ -113,5 +114,6 @@ public final class Config {
     ORDER_TTL = json.get("ORDER_TTL").getAsLong();
     USER_TTL = json.get("USER_TTL").getAsLong();
     SALT = json.get("SALT").getAsString();
+    ENCRYPTION_KEY = json.get("ENCRYPTION_KEY").getAsString();
   }
 }

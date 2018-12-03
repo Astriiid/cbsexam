@@ -1,5 +1,7 @@
 package utils;
 
+import static utils.Config.getENCRYPTION_KEY;
+
 public final class Encryption {
 
   public static String encryptDecryptXOR(String rawString) {
@@ -8,8 +10,11 @@ public final class Encryption {
     if (Config.getEncryption()) {
 
       // The key is predefined and hidden in code
-      // TODO: Create a more complex code and store it somewhere better
-      char[] key = {'C', 'B', 'S'};
+      // TODO: Create a more complex code and store it somewhere better - FIXED
+
+      //Astrids notes: Saving in Config instead of the local char
+      String encryptionKey = getENCRYPTION_KEY();
+      char [] key = encryptionKey.toCharArray();
 
       // Stringbuilder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();

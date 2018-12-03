@@ -20,13 +20,13 @@ public class ProductCache {
     this.ttl = Config.getProductTtl();
   }
 
-  public ArrayList<Product> getProduct(Boolean forceUpdate) {
+  public ArrayList<Product> getProducts (Boolean forceUpdate) {
 
     // If we whis to clear cache, we can set force update.
     // Otherwise we look at the age of the cache and figure out if we should update.
     // If the list is empty we also check for new products
     if (forceUpdate
-        || ((this.created + this.ttl) >= (System.currentTimeMillis() / 1000L))
+        || ((this.created + this.ttl) <= (System.currentTimeMillis() / 1000L))
         || this.products.isEmpty()) {
 
       // Get products from controller, since we wish to update.

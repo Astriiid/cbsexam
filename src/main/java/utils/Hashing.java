@@ -3,6 +3,8 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import model.User;
 import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
@@ -45,6 +47,11 @@ public final class Hashing {
         try {
             // We load the hashing algoritm we wish to use.
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            //Astrids notes: VI gør det endnu mere sikkert ved at tilføje Salt og gemme det i config
+            String salt = Config.getSALT();
+
+            rawString = rawString + User.getCreatedTime() + salt;
 
             // We convert to byte array
             byte[] hash = digest.digest(rawString.getBytes(StandardCharsets.UTF_8));

@@ -3,19 +3,17 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import cache.OrderCache;
 import model.Address;
 import model.LineItem;
 import model.Order;
 import model.User;
 import utils.Log;
+import java.sql.Connection;
 
 public class OrderController {
 
   private static DatabaseController dbCon;
   //Astrids changes: Creating an object of OrderCache
-  private static OrderCache orderCache;
 
   public OrderController() {
     dbCon = new DatabaseController();
@@ -26,8 +24,6 @@ public class OrderController {
     // check for connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
-      //Astrids changes: adding value to the object
-      orderCache = new OrderCache();
     }
 
     // Build SQL string to query
@@ -141,39 +137,65 @@ public class OrderController {
     // Save the user to the database and save them back to initial order instance
     order.setCustomer(UserController.createUser(order.getCustomer()));
 
-    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts.
+    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. - FIXED
 
-    // Insert the product in the DB
-    int orderID = dbCon.insert(
-        "INSERT INTO orders(user_id, billing_address_id, shipping_address_id, order_total, created_at, updated_at) VALUES("
-            + order.getCustomer().getId()
-            + ", "
-            + order.getBillingAddress().getId()
-            + ", "
-            + order.getShippingAddress().getId()
-            + ", "
-            + order.calculateOrderTotal()
-            + ", "
-            + order.getCreatedAt()
-            + ", "
-            + order.getUpdatedAt()
-            + ")");
+    Connection connection = null;
 
-    if (orderID != 0) {
-      //Update the productid of the product before returning
-      order.setId(orderID);
+    try {
+
+      connection.setAutoCommit(false);
+
+
+      // Insert the product in the DB
+      int orderID = dbCon.insert(
+              "INSERT INTO orders(user_id, billing_address_id, shipping_address_id, order_total, created_at, updated_at) VALUES("
+                      + order.getCustomer().getId()
+                      + ", "
+                      + order.getBillingAddress().getId()
+                      + ", "
+                      + order.getShippingAddress().getId()
+                      + ", "
+                      + order.calculateOrderTotal()
+                      + ", "
+                      + order.getCreatedAt()
+                      + ", "
+                      + order.getUpdatedAt()
+                      + ")");
+
+      if (orderID != 0) {
+        //Update the productid of the product before returning
+        order.setId(orderID);
+      }
+
+      // Create an empty list in order to go trough items and then save them back with ID
+      ArrayList<LineItem> items = new ArrayList<LineItem>();
+
+      // Save line items to database
+      for (LineItem item : order.getLineItems()) {
+        item = LineItemController.createLineItem(item, order.getId());
+        items.add(item);
+      }
+
+      order.setLineItems(items);
+
+      connection.commit();
+
+    }catch(SQLException x) {
+      try{
+        connection.rollback();
+
+        System.out.println("Rollback");
+      }catch(SQLException x2) {
+
+        System.out.println("No rollback" + x2.getMessage());
+      }finally {
+        try{
+          connection.setAutoCommit(true);
+        }catch(SQLException x3){
+          x3.printStackTrace();
+        }
+      }
     }
-
-    // Create an empty list in order to go trough items and then save them back with ID
-    ArrayList<LineItem> items = new ArrayList<LineItem>();
-
-    // Save line items to database
-    for(LineItem item : order.getLineItems()){
-      item = LineItemController.createLineItem(item, order.getId());
-      items.add(item);
-    }
-
-    order.setLineItems(items);
 
     // Return order
     return order;
