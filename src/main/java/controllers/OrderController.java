@@ -187,6 +187,9 @@ public class OrderController {
         System.out.println("Rollback");
       }catch(SQLException x2) {
 
+
+        //Astrids notes: If the order does not go through, it will not roll back
+
         System.out.println("No rollback" + x2.getMessage());
       }finally {
         try{
